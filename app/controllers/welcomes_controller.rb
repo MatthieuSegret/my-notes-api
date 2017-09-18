@@ -1,6 +1,6 @@
 class WelcomesController < ApplicationController
   def hello
-    @message = "world"
+    @message = params[:message] || 'world'
     render json: { message: "Hello #{@message} !" }
   end
 end
