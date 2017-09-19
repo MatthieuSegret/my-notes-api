@@ -23,4 +23,11 @@ RSpec.describe 'Notes', type: :request do
       expect(json[:content]).to eq(note.content)
     end
   end
+
+  describe 'DELETE /api/v1/notes/:id' do
+    it 'destroys the requested note' do
+      create(:note)
+      expect { delete '/api/v1/notes/1' }.to change(Note, :count).by(-1)
+    end
+  end
 end
