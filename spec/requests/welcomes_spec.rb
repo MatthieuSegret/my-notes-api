@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Welcomes', type: :request do
-  describe 'GET /welcomes/hello' do
-    before { get '/welcomes/hello' }
+  describe 'GET /api/v1/welcomes/hello' do
+    before { get '/api/v1/welcomes/hello' }
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
@@ -13,7 +13,7 @@ RSpec.describe 'Welcomes', type: :request do
     end
 
     it 'returns message using params' do
-      get '/welcomes/hello?message=Matz'
+      get '/api/v1/welcomes/hello?message=Matz'
       expect(json[:message]).to eq('Hello Matz !')
     end
   end

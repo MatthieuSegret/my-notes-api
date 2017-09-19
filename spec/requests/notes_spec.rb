@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'Notes', type: :request do
-  describe 'GET /notes' do
+  describe 'GET /api/v1/notes' do
     let!(:notes) { create_list(:note, 5) }
-    before { get '/notes' }
+    before { get '/api/v1/notes' }
 
     it 'returns 5 notes' do
       expect(json.count).to eq(5)
