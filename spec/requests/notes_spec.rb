@@ -32,7 +32,7 @@ RSpec.describe 'Notes', type: :request do
         }.to change(Note, :count).by(1)
       end
 
-      it "renders a JSON response with the new post" do
+      it "renders a JSON response with the new note" do
         post '/api/v1/notes', params: {note: attributes_for(:note)}
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')        
@@ -42,6 +42,34 @@ RSpec.describe 'Notes', type: :request do
 
     context "with invalid params" do
       before { post '/api/v1/notes', params: {note: attributes_for(:invalid_note)} }
+
+      it "responds with errors in header" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to eq('application/json')
+      end
+
+      it "renders a JSON response with errors for the new note" do
+        expect(json[:title]).to eq(["can't be blank"])
+        expect(json[:content]).to eq(["is too short (minimum is 10 characters)"])
+      end
+    end
+  end
+
+  describe "PATCH /api/v1/notes/1" do
+    let(:note) { create(:note) }
+
+    context "with valid params" do
+      it "updates the requested note" do
+        new_attributes = attributes_for(:another_note)
+        patch api_v1_note_path(note.id), params: {note: attributes_for(:another_note)}
+        note.reload
+        expect(note.title).to eq(new_attributes[:title])
+        expect(note.content).to eq(new_attributes[:content])
+      end
+    end
+
+    context "with invalid params" do
+      before { patch api_v1_note_path(note.id), params: {note: attributes_for(:invalid_note)} }
 
       it "responds with errors in header" do
         expect(response).to have_http_status(:unprocessable_entity)

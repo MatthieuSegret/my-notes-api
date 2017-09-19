@@ -1,7 +1,7 @@
 module API
   module V1
     class NotesController < ApplicationController
-      before_action :set_note, only: [:show, :destroy]
+      before_action :set_note, only: [:show, :update, :destroy]
 
       # GET /api/v1/notes
       def index
@@ -20,6 +20,15 @@ module API
 
         if @note.save
           render json: @note, status: :created, location: api_v1_note_url(@note)
+        else
+          render json: @note.errors, status: :unprocessable_entity
+        end
+      end
+
+      # PATCH/PUT /api/v1/notes/1
+      def update
+        if @note.update(note_params)
+          render json: @note
         else
           render json: @note.errors, status: :unprocessable_entity
         end
