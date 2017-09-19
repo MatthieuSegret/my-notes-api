@@ -14,4 +14,13 @@ RSpec.describe 'Notes', type: :request do
       expect(json.map { |n| n[:content] }).to eq(notes.map(&:content))
     end
   end
+
+  describe 'GET /api/v1/notes/:id' do
+    it 'returns note by id' do
+      note = create(:note)
+      get '/api/v1/notes/1'
+      expect(json[:title]).to eq(note.title)
+      expect(json[:content]).to eq(note.content)
+    end
+  end
 end

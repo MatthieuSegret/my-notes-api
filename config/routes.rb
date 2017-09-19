@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace 'v1' do
       get 'welcomes/hello', to: 'welcomes#hello'
       get 'notes', to: 'notes#index'
+      get 'notes/:id', to: 'notes#show'
     end
   end
 end
