@@ -3,8 +3,9 @@ FactoryGirl.define do
     title Faker::Book.title
     content Faker::Lorem.sentence
 
-    factory :note_with_empty_title do
+    factory :invalid_note do
       title ''
+      content Faker::Lorem.characters(9)
     end
   end
 end

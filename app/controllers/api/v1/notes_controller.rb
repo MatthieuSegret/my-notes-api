@@ -14,6 +14,17 @@ module API
         render json: @note
       end
 
+      # POST /api/v1/notes
+      def create
+        @note = Note.new(note_params)
+
+        if @note.save
+          render json: @note, status: :created, location: api_v1_note_url(@note)
+        else
+          render json: @note.errors, status: :unprocessable_entity
+        end
+      end
+
       # DELETE /api/v1/notes/1
       def destroy
         @note.destroy
@@ -24,6 +35,10 @@ module API
 
       def set_note
         @note = Note.find(params[:id])
+      end
+
+      def note_params
+        params.require(:note).permit(:title, :content)
       end
     end
   end

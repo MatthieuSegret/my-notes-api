@@ -3,7 +3,8 @@ Rails.application.routes.draw do
     namespace 'v1' do
       get 'welcomes/hello', to: 'welcomes#hello'
       get 'notes', to: 'notes#index'
-      get 'notes/:id', to: 'notes#show'
+      post 'notes', to: 'notes#create'
+      get 'notes/:id', to: 'notes#show', as: :note
       delete 'notes/:id', to: 'notes#destroy'
     end
   end

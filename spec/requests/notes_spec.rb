@@ -24,6 +24,37 @@ RSpec.describe 'Notes', type: :request do
     end
   end
 
+  describe 'POST /api/v1/notes' do
+    context "with valid params" do
+      it "creates a new Note" do
+        expect {
+          post '/api/v1/notes', params: {note: attributes_for(:note)}
+        }.to change(Note, :count).by(1)
+      end
+
+      it "renders a JSON response with the new post" do
+        post '/api/v1/notes', params: {note: attributes_for(:note)}
+        expect(response).to have_http_status(:created)
+        expect(response.content_type).to eq('application/json')        
+        expect(response.location).to eq(api_v1_note_url(Note.last))
+      end
+    end
+
+    context "with invalid params" do
+      before { post '/api/v1/notes', params: {note: attributes_for(:invalid_note)} }
+
+      it "responds with errors in header" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to eq('application/json')
+      end
+
+      it "renders a JSON response with errors for the new note" do
+        expect(json[:title]).to eq(["can't be blank"])
+        expect(json[:content]).to eq(["is too short (minimum is 10 characters)"])
+      end
+    end
+  end
+
   describe 'DELETE /api/v1/notes/:id' do
     it 'destroys the requested note' do
       create(:note)
