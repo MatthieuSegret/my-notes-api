@@ -23,6 +23,30 @@ RSpec.describe 'Notes', type: :request do
     end
   end
 
+  describe 'GET /api/v1/notes/search' do
+    let!(:another_notes) { create_list(:another_note, 2) }
+    
+    before {
+      create_list(:note, 5)
+      get '/api/v1/notes/search', params: {keywords: '10 characters'}      
+    }
+
+    it 'check number of notes in result' do
+      expect(json.count).to eq(2)
+    end
+
+    it 'with search in content' do      
+      expect(json.map { |n| n[:title] }).to eq(another_notes.map(&:title))
+      expect(json.map { |n| n[:content] }).to eq(another_notes.map(&:content))
+    end
+
+    it 'with search in title' do
+      get '/api/v1/notes/search', params: {keywords: 'a note'}            
+      expect(json.map { |n| n[:title] }).to eq(another_notes.map(&:title))
+      expect(json.map { |n| n[:content] }).to eq(another_notes.map(&:content))
+    end
+  end
+
   describe 'GET /api/v1/notes/:id' do
     it 'returns note by id' do
       note = create(:note)

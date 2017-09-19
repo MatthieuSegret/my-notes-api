@@ -9,6 +9,12 @@ module API
         render json: @notes
       end
 
+      # GET /api/v1/notes/search
+      def search
+        @notes = Note.search(params[:keywords]).paginate(params[:offset])
+        render json: @notes
+      end
+
       # GET /api/v1/notes/1
       def show
         render json: @note

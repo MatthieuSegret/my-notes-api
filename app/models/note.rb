@@ -7,4 +7,9 @@ class Note < ApplicationRecord
     offset ||= 0
     offset(offset).limit(self.paginates_per)
   end
+
+  def self.search(keywords)
+    return self if keywords.blank?
+    where('lower(title) like :keywords OR lower(content) like :keywords', keywords: "%#{keywords.downcase}%")
+  end
 end
