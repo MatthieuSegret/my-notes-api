@@ -2,12 +2,7 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       get 'welcomes/hello', to: 'welcomes#hello'
-      get 'notes', to: 'notes#index'
-      post 'notes', to: 'notes#create'
-      get 'notes/:id', to: 'notes#show', as: :note
-      delete 'notes/:id', to: 'notes#destroy'
-      put 'notes/:id', to: 'notes#update'
-      patch 'notes/:id', to: 'notes#update'
+      resources :notes
     end
   end
 end
