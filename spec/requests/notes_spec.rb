@@ -5,13 +5,21 @@ RSpec.describe 'Notes', type: :request do
     let!(:notes) { create_list(:note, 5) }
     before { get '/api/v1/notes' }
 
-    it 'returns 5 notes' do
-      expect(json.count).to eq(5)
+    it 'check number of notes' do
+      expect(json.count).to eq(Note.paginates_per)
     end
 
-    it 'returns 5 notes' do
-      expect(json.map { |n| n[:title] }).to eq(notes.map(&:title))
-      expect(json.map { |n| n[:content] }).to eq(notes.map(&:content))
+    it 'returns notes' do
+      first_notes = notes.first(Note.paginates_per)
+      expect(json.map { |n| n[:title] }).to eq(first_notes.map(&:title))
+      expect(json.map { |n| n[:content] }).to eq(first_notes.map(&:content))
+    end
+
+    it 'returns next notes' do
+      get '/api/v1/notes', params: {offset: Note.paginates_per}
+      last_notes = notes.last(2)
+      expect(json.map { |n| n[:title] }).to eq(last_notes.map(&:title))
+      expect(json.map { |n| n[:content] }).to eq(last_notes.map(&:content))
     end
   end
 

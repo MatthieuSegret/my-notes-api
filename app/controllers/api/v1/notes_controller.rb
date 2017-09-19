@@ -5,7 +5,7 @@ module API
 
       # GET /api/v1/notes
       def index
-        @notes = Note.all
+        @notes = Note.paginate(params[:offset])
         render json: @notes
       end
 
