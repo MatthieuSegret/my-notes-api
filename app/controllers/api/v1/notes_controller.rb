@@ -17,7 +17,7 @@ module API
 
       # GET /api/v1/notes/1
       def show
-        render json: @note
+        render json: @note.to_json(only: [:id, :title, :content], include: :comments)
       end
 
       # POST /api/v1/notes

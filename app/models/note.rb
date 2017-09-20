@@ -3,6 +3,8 @@ class Note < ApplicationRecord
   validates :content, length: { minimum: 10 }
   cattr_accessor(:paginates_per) { 3 }
 
+  has_many :comments
+
   def self.paginate(offset)
     offset ||= 0
     offset(offset).limit(self.paginates_per)

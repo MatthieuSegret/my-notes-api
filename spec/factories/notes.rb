@@ -3,6 +3,14 @@ FactoryGirl.define do
     title Faker::Book.title
     content Faker::Lorem.sentence
 
+    transient do
+      comments_count 2
+    end
+
+    after(:create) do |note, evaluator|
+      create_list(:comment, evaluator.comments_count, note: note)
+    end
+
     factory :another_note do
       title 'a note'
       content 'a content with more than 10 characters'

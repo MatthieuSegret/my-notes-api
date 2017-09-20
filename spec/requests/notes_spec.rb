@@ -48,11 +48,16 @@ RSpec.describe 'Notes', type: :request do
   end
 
   describe 'GET /api/v1/notes/:id' do
+    let!(:note) { create(:note, comments_count: 3) }
+    before { get '/api/v1/notes/1' }
+
     it 'returns note by id' do
-      note = create(:note)
-      get '/api/v1/notes/1'
       expect(json[:title]).to eq(note.title)
       expect(json[:content]).to eq(note.content)
+    end
+
+    it 'returns note with comments' do
+      expect(json[:comments].count).to eq(3)
     end
   end
 
@@ -87,7 +92,7 @@ RSpec.describe 'Notes', type: :request do
     end
   end
 
-  describe "PATCH /api/v1/notes/1" do
+  describe "PATCH /api/v1/notes/:id" do
     let(:note) { create(:note) }
 
     context "with valid params" do

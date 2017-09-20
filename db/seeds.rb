@@ -6,7 +6,11 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+Comment.destroy_all
 Note.destroy_all
 10.times do
-  Note.create(title: Faker::Book.title, content: Faker::Lorem.sentence)
+  note = Note.create(title: Faker::Book.title, content: Faker::Lorem.sentence)
+  rand(0..2).times do
+    note.comments.create(body: Faker::Lorem.sentence)
+  end
 end
