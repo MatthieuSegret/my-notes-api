@@ -62,6 +62,8 @@ RSpec.describe 'Notes', type: :request do
   end
 
   describe 'POST /api/v1/notes' do
+    before { create(:user) }
+
     context "with valid params" do
       it "creates a new Note" do
         expect {

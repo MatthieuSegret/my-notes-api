@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :note do
     title Faker::Book.title
     content Faker::Lorem.sentence
+    association :user, factory: :user
 
     transient do
       comments_count 2

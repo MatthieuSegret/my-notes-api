@@ -4,6 +4,7 @@ class Note < ApplicationRecord
   cattr_accessor(:paginates_per) { 3 }
 
   has_many :comments
+  belongs_to :user
 
   def self.paginate(offset)
     offset ||= 0

@@ -21,6 +21,7 @@ module API
       # POST /api/v1/notes
       def create
         @note = Note.new(note_params)
+        @note.user = User.last
 
         if @note.save
           render :show, status: :created, location: api_v1_note_url(@note)
