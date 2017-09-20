@@ -3,11 +3,11 @@ module API
     class CommentsController < ApplicationController
       # POST /api/v1/comments
       def create
-        note = Note.find(params[:note_id])
-        @comment = note.comments.build(comment_params)
+        @note = Note.find(params[:note_id])
+        @comment = @note.comments.build(comment_params)
 
         if @comment.save
-          render json: @comment, status: :created
+          render 'api/v1/notes/show', status: :created
         else
           render json: @comment.errors, status: :unprocessable_entity
         end
