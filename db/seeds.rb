@@ -10,7 +10,7 @@ User.destroy_all
 Comment.destroy_all
 Note.destroy_all
 
-user = User.create(name: Faker::GameOfThrones.character)
+user = User.create(name: Faker::GameOfThrones.character, email: Faker::Internet.email, password: '12341234', password_confirmation: '12341234')
 10.times do
   note = Note.create(title: Faker::Book.title, content: Faker::Lorem.sentence, user: user)
   rand(0..2).times do
