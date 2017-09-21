@@ -1,24 +1,13 @@
-# README
+# My Notes Rails API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ateliers d'une formation **Rails API** chez **[Human Coders](https://www.humancoders.com "Human Coders")**.
+Ces ateliers consistent au développement d'une application de gestion de notes en TDD avec recherche, pagination et authentification JWT
 
-Things you may want to cover:
+## Technologies
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Ruby 2.4
+- Rails 5.1
+- [JBuilder](https://github.com/rails/jbuilder) - JBuilder permet la sérialisation JSON à l'aide d'une DSL
+- [Devise](https://github.com/plataformatec/devise) - Devise est un système d'authentification pour Ruby on Rails basé sur [Warden](https://github.com/hassox/warden).
+- [JWT](https://github.com/jwt/ruby-jwt) - JWT est une implementation Ruby de [JSON Web Token (JWT)](https://jwt.io/)
+- SQLite3 Pour le developpement et PostgreSQL pour la production.
