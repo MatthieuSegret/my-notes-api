@@ -8,6 +8,6 @@ class JsonWebToken
   end
 
   def self.expiration
-    30.days.from_now.to_i
+    10.minutes.from_now.to_i
   end
 end

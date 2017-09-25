@@ -50,12 +50,17 @@ RSpec.describe 'Users', type: :request do
       before { post '/api/v1/users/auth', params: { user: { email: 'matt@humancoders.com', password: '12341234' } } }
 
       it 'returns header response' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
       end
 
-      it 'renders a JSON response with token' do
+      it 'renders a JSON response with tokens' do
         expect(json).to include(:token)
+        expect(json).to include(:refresh_token)
+      end
+
+      it 'user has refresh_token' do
+        expect(user.reload.refresh_token).to be_present
       end
 
       it 'returns valid payload' do
@@ -80,6 +85,43 @@ RSpec.describe 'Users', type: :request do
         expect(response).to have_http_status(:unauthorized)
         expect(json[:error]).to eq('Invalid email or password.')
       end
+    end
+  end
+
+  describe 'POST /api/v1/users/refresh_token' do
+    let!(:user) { create(:user, email: 'matt@humancoders.com') }
+    let(:refresh_token) { 
+      post '/api/v1/users/auth', params: { user: { email: 'matt@humancoders.com', password: '12341234' } }
+      json[:refresh_token]
+    }
+
+    context 'with valid refresh_token' do
+      before { post '/api/v1/users/refresh_token', params: { refresh_token: refresh_token } }
+      
+      it('returns jwt token') { expect(json).to include(:token) }
+
+      it 'returns valid jwt token' do
+        patch '/api/v1/users', params: { user: { name: 'Matt', current_password: '12341234' } }, headers: { 'Authorization': "Bearer #{json[:token]}" }
+        expect(user.reload.name).to eq('Matt') 
+      end
+    end
+
+    context 'with invalid refresh_token' do
+      it 'returns valid jwt token' do
+        post '/api/v1/users/refresh_token', params: { refresh_token: 'invalid_refresh_token' }
+        expect(response).to have_http_status(:unauthorized)
+        expect(json[:error]).to eq('Invalid refresh token.')
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/users/revoke_refresh_token' do
+    let!(:user) { create(:user, email: 'matt@humancoders.com') }
+    before { post '/api/v1/users/auth', params: { user: { email: 'matt@humancoders.com', password: '12341234' } } }
+
+    it 'user has not refresh_token' do
+      delete '/api/v1/users/revoke_refresh_token', headers: authenticated_header(user)
+      expect(user.reload.refresh_token).to be_nil
     end
   end
 end
