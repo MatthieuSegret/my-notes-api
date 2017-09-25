@@ -4,6 +4,8 @@ Rails.application.routes.draw do
       get 'welcomes/hello', to: 'welcomes#hello'
 
       post 'users/auth', to: 'users#auth'
+      post 'users/refresh_token', to: 'users#refresh_token'
+      delete 'users/revoke_refresh_token', to: 'users#revoke_refresh_token'
       devise_for :users, module: 'devise', singular: :user, only: [:registrations]
 
       resources :notes do

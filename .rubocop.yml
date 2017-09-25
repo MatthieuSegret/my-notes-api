@@ -1,2 +1,4 @@
 Style/SymbolArray:
   Enabled: false
+Style/RedundantSelf:
+  Enabled: false
