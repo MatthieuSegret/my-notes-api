@@ -7,12 +7,12 @@ RSpec.describe 'Comments', type: :request do
     context 'with valid params' do
       it 'creates a new Comment' do
         expect do
-          post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:comment) }
+          post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:comment) }, headers: authenticated_header
         end.to change(note.comments, :count).by(1)
       end
 
       it 'renders a JSON response with the new note' do
-        post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:comment) }
+        post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:comment) }, headers: authenticated_header
         expect(response).to have_http_status(:created)
         expect(response.content_type).to eq('application/json')
         expect(note.comments.last.body).to eq(attributes_for(:comment)[:body])
@@ -20,7 +20,7 @@ RSpec.describe 'Comments', type: :request do
     end
 
     context "with invalid params" do
-      before { post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:invalid_comment) } }
+      before { post "/api/v1/notes/#{note.id}/comments", params: { comment: attributes_for(:invalid_comment) }, headers: authenticated_header }
 
       it "responds with errors in header" do
         expect(response).to have_http_status(:unprocessable_entity)

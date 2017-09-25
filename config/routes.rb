@@ -3,6 +3,8 @@ Rails.application.routes.draw do
     namespace 'v1' do
       get 'welcomes/hello', to: 'welcomes#hello'
 
+      post 'users/auth', to: 'users#auth'
+      delete 'users/revoke_token', to: 'users#revoke_token'
       devise_for :users, module: 'devise', singular: :user, only: [:registrations]
 
       resources :notes do

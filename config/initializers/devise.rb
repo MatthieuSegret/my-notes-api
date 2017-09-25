@@ -256,10 +256,11 @@ Devise.setup do |config|
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.
   #
-  # config.warden do |manager|
-  #   manager.intercept_401 = false
-  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
-  # end
+  config.warden do |manager|
+    # manager.intercept_401 = false
+    manager.strategies.add :token, Devise::Strategies::Token
+    manager.default_strategies(scope: :user).unshift :token
+  end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
@@ -274,4 +275,24 @@ Devise.setup do |config|
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
+end
+
+module Devise
+  module Strategies
+    class Token < Base
+      def valid?
+        request.headers["Authorization"].present? || session[:auth_token]
+      end
+
+      def authenticate!
+        token = session[:auth_token] || request.headers.fetch("Authorization", "").split(" ").last
+        user = token.present? ? User.find_by(token: token) : nil 
+        if user.present?
+          success! user
+        else
+          fail! "Auth token is invalid"
+        end
+      end
+    end
+  end
 end
