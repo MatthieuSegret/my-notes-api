@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby "2.4.1"
+ruby '2.4.1'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.4'
 
@@ -16,7 +16,7 @@ end
 
 group :production do
   gem 'pg'
-  gem 'rails_12factor'  
+  gem 'rails_12factor'
 end
 
 # Use Puma as the app server
@@ -25,6 +25,7 @@ gem 'puma', '~> 3.7'
 gem 'jbuilder', '~> 2.7'
 gem 'devise', '~> 4.3'
 gem 'faker'
+gem 'jwt', '~> 2.0'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password

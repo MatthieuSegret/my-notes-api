@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     namespace 'v1' do
       get 'welcomes/hello', to: 'welcomes#hello'
 
+      post 'users/auth', to: 'users#auth'
       devise_for :users, module: 'devise', singular: :user, only: [:registrations]
 
       resources :notes do

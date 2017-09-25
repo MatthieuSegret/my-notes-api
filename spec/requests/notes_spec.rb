@@ -62,25 +62,25 @@ RSpec.describe 'Notes', type: :request do
   end
 
   describe 'POST /api/v1/notes' do
-    before { create(:user) }
+    let(:author) { create(:user) }
 
     context "with valid params" do
       it "creates a new Note" do
         expect {
-          post '/api/v1/notes', params: {note: attributes_for(:note)}
+          post '/api/v1/notes', params: {note: attributes_for(:note)}, headers: authenticated_header(author)
         }.to change(Note, :count).by(1)
       end
 
       it "renders a JSON response with the new note" do
-        post '/api/v1/notes', params: {note: attributes_for(:note)}
+        post '/api/v1/notes', params: {note: attributes_for(:note)}, headers: authenticated_header(author)
         expect(response).to have_http_status(:created)
-        expect(response.content_type).to eq('application/json')        
+        expect(response.content_type).to eq('application/json')
         expect(response.location).to eq(api_v1_note_url(Note.last))
       end
     end
 
     context "with invalid params" do
-      before { post '/api/v1/notes', params: {note: attributes_for(:invalid_note)} }
+      before { post '/api/v1/notes', params: {note: attributes_for(:invalid_note)}, headers: authenticated_header(author) }
 
       it "responds with errors in header" do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -100,7 +100,7 @@ RSpec.describe 'Notes', type: :request do
     context "with valid params" do
       it "updates the requested note" do
         new_attributes = attributes_for(:another_note)
-        patch api_v1_note_path(note.id), params: {note: attributes_for(:another_note)}
+        patch api_v1_note_path(note.id), params: {note: attributes_for(:another_note)}, headers: authenticated_header(note.user)
         note.reload
         expect(note.title).to eq(new_attributes[:title])
         expect(note.content).to eq(new_attributes[:content])
@@ -108,7 +108,7 @@ RSpec.describe 'Notes', type: :request do
     end
 
     context "with invalid params" do
-      before { patch api_v1_note_path(note.id), params: {note: attributes_for(:invalid_note)} }
+      before { patch api_v1_note_path(note.id), params: {note: attributes_for(:invalid_note)}, headers: authenticated_header(note.user) }
 
       it "responds with errors in header" do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -120,12 +120,23 @@ RSpec.describe 'Notes', type: :request do
         expect(json[:content]).to eq(["is too short (minimum is 10 characters)"])
       end
     end
+
+    context "with not owner" do
+      before { patch api_v1_note_path(note.id), params: {note: attributes_for(:another_note)}, headers: authenticated_header(create(:user)) }
+
+      it "responds with errors in header" do
+        expect(response).to have_http_status(:forbidden)
+        expect(response.content_type).to eq('application/json')
+      end
+    end
   end
 
   describe 'DELETE /api/v1/notes/:id' do
     it 'destroys the requested note' do
-      create(:note)
-      expect { delete '/api/v1/notes/1' }.to change(Note, :count).by(-1)
+      note = create(:note)
+      expect {
+        delete api_v1_note_path(note.id), headers: authenticated_header(note.user)
+      }.to change(Note, :count).by(-1)
     end
   end
 end
