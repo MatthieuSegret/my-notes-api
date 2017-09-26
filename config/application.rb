@@ -32,5 +32,6 @@ module MyNotesApi
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: '_my_notes_api', expire_after: 30.days
+    config.middleware.use ActionDispatch::Flash
   end
 end

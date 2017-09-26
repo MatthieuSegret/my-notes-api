@@ -17,7 +17,10 @@ describe API::V1::UsersController do
   end
 
   describe 'DELETE #revoke_token' do
-    before { delete :revoke_token }
+    before do
+      request.headers['X-XSRF-TOKEN'] = cookies['XSRF-TOKEN']
+      delete :revoke_token
+    end
 
     it('token is nil within session') do
       expect(session[:auth_token]).to be_nil

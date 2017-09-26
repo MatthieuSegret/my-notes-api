@@ -16,7 +16,7 @@ module API
       def revoke_token
         session[:auth_token] = nil
         current_user.update(token: nil)
-        sign_out current_user
+        sign_out current_user 
         head :ok
       end
     end
